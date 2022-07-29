@@ -1,89 +1,90 @@
 CREATE DATABASE SpotifyClone;
 
-CREATE TABLE SpotifyClone.plano (
+CREATE TABLE SpotifyClone.plano(
 	plano_id INT PRIMARY KEY AUTO_INCREMENT,
-    tipo VARCHAR(30) NOT NULL,
-    valor DECIMAL(7,2) NOT NULL
-); 
+	nome_plano VARCHAR(20) NOT NULL,
+	valor_plano DECIMAL(6,2) NOT NULL
+);
 
-CREATE TABLE SpotifyClone.artistas (
+CREATE TABLE SpotifyClone.artistas(
 	artista_id INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(50) NOT NULL
+	nome_artista VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE SpotifyClone.usuarios (
-	usuario_id INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(50) NOT NULL,
-    idade INT NOT NULL,
-    data_assinatura DATE NOT NULL,
-    FOREIGN KEY (plano_id) REFERENCES SpotifyClone.plano(plano_id)
-); 
+CREATE TABLE SpotifyClone.usuario(
+  usuario_id INT PRIMARY KEY AUTO_INCREMENT,
+  plano_id INT NOT NULL,
+  nome_usuario VARCHAR(50) NOT NULL,
+  idade INT NOT NULL,
+  data_assinatura DATE NOT NULL,
+  FOREIGN KEY (plano_id) REFERENCES SpotifyClone.plano(plano_id)
+);
 
-CREATE TABLE SpotifyClone.album (
+
+CREATE TABLE SpotifyClone.album(
 	album_id INT PRIMARY KEY AUTO_INCREMENT,
-    artista_id INT NOT NULL,
-    titulo VARCHAR(100) NOT NULL,
-    ano_lancamento YEAR NOT NULL,
-    FOREIGN KEY (artista_id) REFERENCES SpotifyClone.artistas(artista_id)
+	artista_id INT NOT NULL,
+	nome_album VARCHAR(50) NOT NULL,
+	ano_lancamento INT NOT NULL,
+	FOREIGN KEY (artista_id) REFERENCES SpotifyClone.artistas(artista_id)
 );
 
-CREATE TABLE SpotifyClone.musicas (
-	musica_id INT PRIMARY KEY AUTO_INCREMENT,
-    album_id INT NOT NULL,
-    nome VARCHAR(100) NOT NULL,
-    duracao INT NOT NULL,
-    FOREIGN KEY (album_id) REFERENCES SpotifyClone.album(album_id)
+CREATE TABLE SpotifyClone.cancoes(
+	cancao_id INT PRIMARY KEY AUTO_INCREMENT,
+	album_id INT NOT NULL,
+	nome_cancao VARCHAR(50) NOT NULL,
+	duracao INT NOT NULL,
+	FOREIGN KEY (album_id) REFERENCES SpotifyClone.album(album_id)
 );
 
-CREATE TABLE SpotifyClone.historico (
-	musica_id INT NOT NULL,
-    usuario_id INT NOT NULL,
-    data_reproducao DATETIME NOT NULL,
-	CONSTRAINT PRIMARY KEY(musica_id, usuario_id),
-    FOREIGN KEY (usuario_id) REFERENCES SpotifyClone.usuarios(usuario_id),
-    FOREIGN KEY (musica_id) REFERENCES SpotifyClone.musicas(musica_id)
-);
-
-CREATE TABLE SpotifyClone.seguidores (
+CREATE TABLE SpotifyClone.historico(
 	usuario_id INT NOT NULL,
-    artista_id INT NOT NULL,
-	CONSTRAINT PRIMARY KEY(usuario_id, artista_id),
-    FOREIGN KEY (usuario_id) REFERENCES SpotifyClone.usuarios(usuario_id),
-    FOREIGN KEY (artista_id) REFERENCES SpotifyClone.artistas(artista_id)
+	cancao_id INT NOT NULL,
+	data_reproducao DATE NOT NULL,
+	CONSTRAINT PRIMARY KEY(usuario_id, cancao_id),
+	FOREIGN KEY (usuario_id) REFERENCES SpotifyClone.usuario(usuario_id),
+	FOREIGN KEY (cancao_id) REFERENCES SpotifyClone.cancoes(cancao_id)
 );
 
-INSERT INTO SpotifyClone.plano (tipo, valor)
-VALUES
+CREATE TABLE SpotifyClone.seguidores(
+	usuario_id INT NOT NULL,
+	artista_id INT NOT NULL,
+	CONSTRAINT PRIMARY KEY (usuario_id,artista_id),
+	FOREIGN KEY (usuario_id) REFERENCES SpotifyClone.usuario(usuario_id),
+	FOREIGN KEY (artista_id) REFERENCES SpotifyClone.artistas(artista_id)
+);
+
+INSERT INTO SpotifyClone.plano (nome_plano, valor_plano)
+VALUES 
 	('gratuito', 0),
-    ('universitario', 5.99),
-	('pessoal', 6.99),
+    ('universitário', 5.99),
+    ('pessoal', 6.99),
 	('familiar', 7.99);
+	
 
-
-INSERT INTO SpotifyClone.artistas (nome)
-VALUES
-	('Walter Phoenix'),
-    ('Peter Strong'),
-    ('Lance Day'),
-    ('Freedie Shannon'),
-    ('Tyler Isle'),
-    ('Fog');
-
-INSERT INTO SpotifyClone.usuarios (plano_id, nome, idade, data_assinatura)
+INSERT INTO SpotifyClone.usuario (plano_id, nome_usuario, idade, data_assinatura)
 VALUES
 	(1,'Thati', 23, DATE('2019-10-20')),
 	(2,'Cintia', 35, DATE('2017-12-30')),
 	(3,'Bill', 20, DATE('2019-06-05')),
 	(4,'Roger', 45, DATE('2020-05-13')),
 	(4,'Norman', 58, DATE('2017-02-17')),
-	(2,'Patrick', 33, DATE('2017-01-06')),
-	(3,'Vivian', 26, DATE('2018-01-05')),
+	(2,'Patrick',33, DATE('2017-01-06')),
+	(3,'Vivian',26, DATE('2018-01-05')),
 	(3,'Carol',19, DATE('2018-02-14')),
-	(2,'Angelina', 42, DATE('2018-04-29')),
-	(2,'Paul', 46, DATE('2017-01-17')); 
+	(2,'Angelina',42, DATE('2018-04-29')),
+	(2,'Paul',46, DATE('2017-01-17'));
 
+INSERT INTO SpotifyClone.artistas (nome_artista)
+VALUES
+  ('Walter Phoenix'),
+  ('Peter Strong'),
+  ('Lance Day'),
+  ('Freedie Shannon'),
+  ('Tyler Isle'),
+  ('Fog');
 
-INSERT INTO SpotifyClone.album (artista_id, titulo, ano_lancamento)
+INSERT INTO SpotifyClone.album (artista_id, nome_album, ano_lancamento)
 VALUES
   (1,'Envious', 1990),
   (1,'Exuberant', 1993),
@@ -94,10 +95,9 @@ VALUES
   (5,'Chained Down', 2007),
   (5,'Cabinet of fools', 2012),
   (5,'No guarantees', 2015),
-  (6,'Apparatus', 2015); 
+  (6,'Apparatus', 2015);
 
-
-INSERT INTO SpotifyClone.musicas (nome, duracao, album_id)
+INSERT INTO SpotifyClone.cancoes (nome_cancao, duracao, album_id)
 VALUES
   ('Soul For Us', 200, 1),
   ('Reflections Of Magic', 163, 1),
@@ -140,7 +140,7 @@ VALUES
   ('Baby', 136, 10),
   ('You Make Me Feel So..', 83, 10);
 
-  INSERT INTO SpotifyClone.historico(usuario_id, musica_id, data_reproducao)
+  INSERT INTO SpotifyClone.historico(usuario_id, cancao_id, data_reproducao)
   VALUES
   	(1, 36, DATE('2020-02-28 10:45:55')),
   	(1, 25, DATE('2020-05-02 05:30:35')),
@@ -181,7 +181,7 @@ VALUES
   	(10, 12, DATE('2017-07-27 05:24:49')),
   	(10, 13, DATE('2017-12-25 01:03:57'));
 
-    INSERT INTO SpotifyClone.seguidores (usuario_id, artista_id)
+ INSERT INTO SpotifyClone.seguidores (usuario_id, artista_id)
  VALUES
   (1, 1),
   (1, 4),
@@ -205,10 +205,3 @@ VALUES
   (9, 3),
   (10, 2),
   (10, 6);
-
-
-
-
-
-
-
